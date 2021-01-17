@@ -1,2 +1,1 @@
-# great-haskell
-Learning basics of Haskell
+# haskell-sandbox
