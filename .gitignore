@@ -1,3 +1,7 @@
+# Created by https://www.toptal.com/developers/gitignore/api/vscode,haskell
+# Edit at https://www.toptal.com/developers/gitignore?templates=vscode,haskell
+
+### Haskell ###
 dist
 dist-*
 cabal-dev
@@ -21,3 +25,13 @@ cabal.project.local
 cabal.project.local~
 .HTF/
 .ghc.environment.*
+
+### vscode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# End of https://www.toptal.com/developers/gitignore
