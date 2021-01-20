@@ -23,6 +23,7 @@ _ || _ = True
 -- (&&) x y = if x then if y then True else False else False
 -- (&&) True b = if True then if b then b else False else False
 
+mult :: Integer -> Integer -> Integer -> Integer
 mult = \x -> (\y -> (\z -> x * y * z))
 
 luhnDouble i x =
