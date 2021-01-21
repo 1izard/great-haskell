@@ -26,15 +26,13 @@ _ || _ = True
 mult :: Integer -> Integer -> Integer -> Integer
 mult = \x -> (\y -> (\z -> x * y * z))
 
-luhnDouble i x =
-  if odd i
-    then
-      if x * 2 > 9
-        then x * 2 - 9
-        else x * 2
-    else x
+luhnDouble x =
+  if x * 2 > 9
+    then x * 2 - 9
+    else x * 2
 
-luhn xs = sum (zipWith luhnDouble [0 ..] (reverse xs)) `mod` 10 == 0
+luhn :: Int -> Int -> Int -> Int -> Bool
+luhn w x y z = (luhnDouble w + x + luhnDouble y + z) `mod` 10 == 0
 
 main = do
   let xs = [1, 2, 3, 4, 5, 6]
@@ -44,6 +42,5 @@ main = do
   print (thirdC xs)
   print (safetailC xs)
   print (safetailC [] :: [Int])
-  print (luhn [1, 7, 8, 4])
-  print (luhn [4, 7, 8, 3])
-  print (luhn [7, 9, 9, 2, 7, 3, 9, 8, 7, 1, 3])
+  print (luhn 1 7 8 4) -- True
+  print (luhn 4 7 8 3) -- False
