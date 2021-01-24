@@ -92,13 +92,17 @@ results ns = [res | (ls, rs) <- split ns, lx <- results ls, ry <- results rs, re
 solutions' :: [Int] -> Int -> [Expr]
 solutions' ns n = [e | ns' <- choices ns, (e, m) <- results ns', m == n]
 
+depth :: Expr -> Int
+depth (Val n) = 1
+depth (App o l r) = 1 + max (depth l) (depth r)
+
 solutions'' :: [Int] -> Int -> [Expr]
 solutions'' ns n = if minDiff == 0 then [e | (e, d) <- sols''] else [fst (head sols'')]
   where
     sols = [(e, abs (m - n)) | ns' <- choices ns, (e, m) <- results ns']
     minDiff = minimum (map snd sols)
     sols' = filter ((== minDiff) . snd) sols
-    sols'' = sortOn (length . values . fst) sols'
+    sols'' = sortOn (depth . fst) sols'
 
 main = do
   print (solutions' [1, 3, 7, 10, 25, 50] 765)
