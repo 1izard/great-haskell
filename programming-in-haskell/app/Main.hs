@@ -4,4 +4,4 @@ import Lib
 
 main :: IO ()
 main = do
-  print (7 + 11 * 75)
+  print [(x `mod` 10) + 1 | x <- [-1 .. 11]]

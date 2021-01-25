@@ -24,7 +24,7 @@ sgetLine = do
       return []
     else do
       putChar '-'
-      xs <- getLine
+      xs <- sgetLine
       return (x : xs)
 
 match :: String -> String -> String
