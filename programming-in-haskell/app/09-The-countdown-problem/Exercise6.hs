@@ -13,8 +13,8 @@ valid :: Op -> Int -> Int -> Bool
 valid Add x y = x <= y
 valid Sub x y = x > y
 valid Mul x y = x /= 1 && y /= 1 && x <= y
-valid Div x y = y /= 1 && x `mod` y == 0
-valid Exp x y = x /= 0 && y /= 1
+valid Div x y = y /= 0 && y /= 1 && x `mod` y == 0
+valid Exp x y = x /= 0 && x /= 1 && y > 1
 
 apply :: Op -> Int -> Int -> Int
 apply Add x y = x + y
@@ -57,27 +57,13 @@ perms (x : xs) = concat (map (interleave x) (perms xs))
 choices :: [a] -> [[a]]
 choices = concat . map perms . subs
 
-solution :: Expr -> [Int] -> Int -> Bool
-solution e ns n = elem (values e) (choices ns) && eval e == [n]
-
 split :: [a] -> [([a], [a])]
 split [] = []
 split [_] = []
 split (x : xs) = ([x], xs) : [(x : ls, rs) | (ls, rs) <- split xs]
 
 ops :: [Op]
-ops = [Add, Sub, Mul, Div]
-
-combine :: Expr -> Expr -> [Expr]
-combine l r = [App o l r | o <- ops]
-
-exprs :: [Int] -> [Expr]
-exprs [] = []
-exprs [n] = [Val n]
-exprs ns = [e | (ls, rs) <- split ns, l <- exprs ls, r <- exprs rs, e <- combine l r]
-
-solutions :: [Int] -> Int -> [Expr]
-solutions ns n = [e | ns' <- choices ns, e <- exprs ns', eval e == [n]]
+ops = [Add, Sub, Mul, Div, Exp]
 
 type Result = (Expr, Int)
 
@@ -88,9 +74,6 @@ results :: [Int] -> [Result]
 results [] = []
 results [n] = [(Val n, n) | n > 0]
 results ns = [res | (ls, rs) <- split ns, lx <- results ls, ry <- results rs, res <- combine' lx ry]
-
-solutions' :: [Int] -> Int -> [Expr]
-solutions' ns n = [e | ns' <- choices ns, (e, m) <- results ns', m == n]
 
 depth :: Expr -> Int
 depth (Val n) = 1
@@ -105,6 +88,5 @@ solutions'' ns n = if minDiff == 0 then [e | (e, d) <- sols''] else [fst (head s
     sols'' = sortOn (depth . fst) sols'
 
 main = do
-  print (solutions' [1, 3, 7, 10, 25, 50] 765)
-  print (solutions'' [1, 3, 7, 10, 25, 50] 765)
-  print (solutions'' [1, 3, 7, 10, 25, 50] 831)
+  print (solutions'' [1, 3, 7, 10, 25, 50] 765) -- [(25-10)*(1+50),(25-(3+7))*(1+50),((25-3)-7)*(1+50),((25-7)-3)*(1+50), ..., (50*(25+((3-1)^7)))/10]
+  print (solutions'' [1, 3, 7, 10, 25, 50] 831) -- [7+((1+10)*(25+50))]

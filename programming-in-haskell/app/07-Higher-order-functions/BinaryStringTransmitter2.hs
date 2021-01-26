@@ -3,9 +3,6 @@ import Data.Char
 type Bit = Int
 
 bin2int :: [Bit] -> Int
--- bin2int bits = sum [w * b | (w, b) <- zip weights bits]
---   where
---     weights = iterate (* 2) 1
 bin2int = foldr (\x y -> x + 2 * y) 0
 
 int2bin :: Int -> [Bit]
@@ -53,7 +50,8 @@ main = do
   print (bin2int [1, 0, 1, 1]) -- 13
   print (int2bin 13) -- [1, 0, 1, 1]
   print (make8 [1, 0, 1, 1]) -- [1,0,1,1,0,0,0,0]
-  print (addParity [1, 0, 0, 0, 0, 0, 0, 0])
+  print (addParity [1, 0, 0, 0, 0, 0, 0, 0]) -- [1,0,0,0,0,0,0,0,1]
+  print (addParity [1, 1, 0, 0, 0, 0, 0, 0]) -- [1,1,0,0,0,0,0,0,0]
   print (encode "abc") -- [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
   print (decode [1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0]) -- "abc"
   -- print (decode (tail [1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0])) -- "Incorrect!"

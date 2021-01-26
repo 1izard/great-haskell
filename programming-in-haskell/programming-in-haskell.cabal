@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 972a8fde287a7b2bbd1fa71969a859624883892b6e96684d6edaa41f012724c7
+-- hash: 29057a1f8c7c733b11918439531e7efcb04a138488c2d58697c64ee38d29657a
 
 name:           programming-in-haskell
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , random
   default-language: Haskell2010
 
 executable programming-in-haskell-exe
@@ -46,6 +47,7 @@ executable programming-in-haskell-exe
   build-depends:
       base >=4.7 && <5
     , programming-in-haskell
+    , random
   default-language: Haskell2010
 
 test-suite programming-in-haskell-test
@@ -59,4 +61,5 @@ test-suite programming-in-haskell-test
   build-depends:
       base >=4.7 && <5
     , programming-in-haskell
+    , random
   default-language: Haskell2010

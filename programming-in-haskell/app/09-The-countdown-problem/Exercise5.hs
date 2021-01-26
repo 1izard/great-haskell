@@ -74,7 +74,9 @@ exprs ns = [e | (ls, rs) <- split ns, l <- exprs ls, r <- exprs rs, e <- combine
 solutions :: [Int] -> Int -> [Expr]
 solutions ns n = [e | ns' <- choices ns, e <- exprs ns', eval e == [n]]
 
+es :: [Expr]
+es = [e | ns <- choices [1, 3, 7, 10, 25, 50], e <- exprs ns]
+
 main = do
-  let es = [e | ns <- choices [1, 3, 7, 10, 25, 50], e <- exprs ns]
   print (length es) -- 33665406
   print (length [e | e <- es, not (null (eval e))]) -- 10839369

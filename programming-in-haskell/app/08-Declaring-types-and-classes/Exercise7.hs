@@ -1,6 +1,6 @@
 instance Eq a => Eq (Maybe a) where
   Just x == Just y = x == y
-  Nothing == Nothing = x == y
+  Nothing == Nothing = True
   _ == _ = False
   x /= y = not (x == y)
 
