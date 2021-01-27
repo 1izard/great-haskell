@@ -140,46 +140,6 @@ prune n (Node x ts) = Node x [prune (n - 1) t | t <- ts]
 depth :: Int
 depth = 9
 
-min' :: Int
-min' = -2
-
-max' :: Int
-max' = 2
-
-minimax' :: Int -> Int -> Int -> Int -> Tree Grid -> Int
-minimax' size a b best (Node g [])
-  | wins size O g = -1
-  | wins size X g = 1
-  | otherwise = 0
-minimax' size a b best (Node g ts)
-  | turn g == O =
-    if a >= b
-      then best
-      else minimax' size a b' minBest (Node g (tail ts))
-  | turn g == X =
-    if a >= b
-      then best
-      else minimax' size a' b maxBest (Node g (tail ts))
-  where
-    maxRes = minimax' size a b max' (head ts)
-    minRes = minimax' size a b min' (head ts)
-    maxBest = max best maxRes
-    minBest = min best minRes
-    a' = max a maxBest
-    b' = min b minBest
-
-alphaBetaPrune :: Int -> Int -> Int -> Int -> Grid -> [Tree Grid] -> Grid
-alphaBetaPrune _ _ _ _ g [] = g
-alphaBetaPrune size a b best g xs
-  | a >= b = g
-  | res > best' = alphaBetaPrune size a' b best' g'' (tail xs)
-  | otherwise = alphaBetaPrune size a' b best' g (tail xs)
-  where
-    Node g'' ts'' = head xs
-    res = minimax' size a b best (Node g'' ts'')
-    best' = max best res
-    a' = max a best'
-
 minimax :: Int -> Tree Grid -> Tree (Grid, Player)
 minimax size (Node g [])
   | wins size O g = Node (g, O) []
@@ -192,8 +152,47 @@ minimax size (Node g ts)
     ts' = map (minimax size) ts
     ps = [p | Node (_, p) _ <- ts']
 
+min' :: Int
+min' = -2
+
+max' :: Int
+max' = 2
+
+bestTree :: Player -> (Int, Grid) -> (Int, Grid) -> (Int, Grid)
+bestTree p res now
+  | p == O =
+    if fst res < fst now
+      then res
+      else now
+  | otherwise =
+    if fst res > fst now
+      then res
+      else now
+
+alphaBetaPrune' :: Int -> Player -> Int -> Int -> (Int, Grid) -> [Tree Grid] -> (Int, Grid)
+alphaBetaPrune' _ _ _ _ best [] = best
+alphaBetaPrune' size p a b best ts
+  | a >= b = best
+  | p == O = alphaBetaPrune' size p a b' best' (tail ts)
+  | otherwise = alphaBetaPrune' size p a' b best' (tail ts)
+  where
+    Node g' ts' = head ts
+    res = alphaBetaPrune size a b (Node g' ts')
+    best' = bestTree p (fst res, g') best
+    a' = max a (fst best')
+    b' = min b (fst best')
+
+alphaBetaPrune :: Int -> Int -> Int -> Tree Grid -> (Int, Grid)
+alphaBetaPrune size a b (Node g [])
+  | wins size O g = (-1, g)
+  | wins size X g = (1, g)
+  | otherwise = (0, g)
+alphaBetaPrune size a b (Node g ts)
+  | turn g == O = alphaBetaPrune' size O a b (max', g) ts
+  | turn g == X = alphaBetaPrune' size X a b (min', g) ts
+
 bestmove :: Int -> Tree Grid -> Player -> Grid
-bestmove size (Node g ts) p = alphaBetaPrune size min' max' min' g ts
+bestmove size (Node g ts) p = snd (alphaBetaPrune size min' max' (Node g ts))
 
 play' :: Int -> Tree Grid -> Player -> IO ()
 play' size (Node g ts) p
